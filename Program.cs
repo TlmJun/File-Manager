@@ -6,12 +6,13 @@ class Program
     static void Main(string[] args)
     {
         FileManager manager  = new FileManager();
-        manager.ListFiles();
-        manager.ListFiles();
-        manager.ChangeDirectory("folder1");
-        manager.ListFiles();
+        var CurrentDirectorys = Directory.GetCurrentDirectory();
 
         Console.WriteLine("Файловый менеджер");
+
+        manager.ListFiles();
+        
+
         Console.WriteLine("Выберите действие");
         Console.WriteLine("1 - копировать");
         Console.WriteLine("2 - удалить");
@@ -39,32 +40,47 @@ class Program
         public string CurrentDirectory;
         public FileManager()
         {
-            CurrentDirectory = new Directory.GetCurrentDirectory();
+            CurrentDirectory = Directory.GetCurrentDirectory();     ///System.ArgumentNullException GetDirectories(path) 
         }
         public void ListFiles()
         {
-            Console.WriteLine("Contents of" + CurrentDirectory);
-            foreach (var file in Directory.GetFiles(CurrentDirectory))
+            try
             {
-                Console.WriteLine(Path.GetFileName(file));
+                Console.WriteLine("Файлы из " + CurrentDirectory);
+                foreach (var file in Directory.GetFiles(CurrentDirectory)) 
+                {
+                    Console.WriteLine(Path.GetFileName(file));
+                }
+                Console.WriteLine("папки из");
+                foreach (var files in Directory.GetDirectories(CurrentDirectory)) 
+                {
+                    Console.WriteLine(Path.GetFileName(files));
+                }
+
             }
-            Console.WriteLine("Contents of" + CurrentDirectory);
-            foreach (var dir in Directory.GetFiles(CurrentDirectory))
+            catch(System.ArgumentNullException)
             {
-                Console.WriteLine(Path.GetFileName(dir));
+                Console.WriteLine("Ошибка");
             }
         }
-        public void ChangeDirectory(string newDirectory)
+        public void ChangeDirectory(string newDirectory)//System.ArgumentNullException
         {
-            string path = Path.Combine(CurrentDirectory, newDirectory);
-            if (Directory.Exists(path))
+            try
             {
-                CurrentDirectory = path;
-                Console.WriteLine("Changed directory to" + CurrentDirectory);
+                string path = Path.Combine(CurrentDirectory, newDirectory);
+                if (Directory.Exists(path))
+                {
+                    CurrentDirectory = path;
+                    Console.WriteLine("Выберите директорию" + CurrentDirectory);
+                }
+                else
+                {
+                    Console.WriteLine("Директория не найдена" + newDirectory);
+                }
             }
-            else
+            catch(System.ArgumentNullException)
             {
-                Console.WriteLine("Directory not found:" + newDirectory);
+                Console.WriteLine("Ошибка");
             }
         }
     } 
